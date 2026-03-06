@@ -18,6 +18,7 @@
 # ==================================================
 
 import pandas as pd
+import pickle
 from sklearn.preprocessing import LabelEncoder
 from sklearn.ensemble import (
     IsolationForest,
@@ -268,3 +269,12 @@ df.to_csv(
 
 print("\nFraud analysis dataset saved to:")
 print("data/processed/transactions_with_fraud.csv")
+
+
+# ==================================================
+# SAVE TRAINED MODEL
+# ==================================================
+
+# save random forest model
+with open("trained/fraud_model.pkl", "wb") as f:
+    pickle.dump(rf_model, f)
