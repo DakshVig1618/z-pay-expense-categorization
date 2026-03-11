@@ -46,7 +46,10 @@ print("Total transactions loaded:", len(df))
 #
 # These patterns often reveal abnormal behavior.
 
-df["transaction_time"] = pd.to_datetime(df["transaction_time"])
+df["transaction_time"] = pd.to_datetime(
+    df["transaction_time"],
+    errors="coerce"
+).dt.floor("s")
 
 df["hour"] = df["transaction_time"].dt.hour
 df["day_of_week"] = df["transaction_time"].dt.dayofweek
@@ -278,3 +281,15 @@ print("data/processed/transactions_with_fraud.csv")
 # save random forest model
 with open("trained/fraud_model.pkl", "wb") as f:
     pickle.dump(rf_model, f)
+
+# save encoders used during training
+with open("trained/category_encoder.pkl", "wb") as f:
+    pickle.dump(category_encoder, f)
+
+with open("trained/location_encoder.pkl", "wb") as f:
+    pickle.dump(location_encoder, f)
+
+with open("trained/device_encoder.pkl", "wb") as f:
+    pickle.dump(device_encoder, f)
+
+print("Encoders saved successfully.")
