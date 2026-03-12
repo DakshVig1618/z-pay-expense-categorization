@@ -10,7 +10,6 @@ as:
 • Automatic expense categorization\
 • Fraud risk detection\
 • Behavioral transaction analysis
-
 Instead of relying on rigid rule‑based systems, Z PAY uses **machine
 learning models and data pipelines** to understand patterns in financial
 transactions.
@@ -95,6 +94,8 @@ pipelines**.
 ## 📁 Folder structure
 
 Z_PAY/<br>
+├── backend<br>
+│  └── app.py \# fastapi backend or real‑time transaction analysis
 ├── data/<br>
 │ ├── raw/ \# original datasets (untouched)<br>
 │ │ ├── categories.csv<br>
@@ -130,14 +131,5 @@ Z_PAY/<br>
 
 ✅ Expense categorization ML pipeline\
 ✅ Fraud detection hybrid model\
-✅ Transaction analysis dataset generation
-
-🔜 Planned extensions:
-
-• FastAPI backend for real‑time transaction analysis\
-• Offer recommendation engine based on spending patterns\
-• User expense analytics dashboard\
-• Improved fraud detection models\
-
-The long‑term goal is to build a **complete intelligent financial
-assistant built on top of transaction data**.
+✅ Transaction analysis dataset generation\
+✅ FastAPI backend for real‑time transaction analysis
