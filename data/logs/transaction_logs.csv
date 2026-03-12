@@ -1,0 +1,6 @@
+description,amount,category,risk_score,is_fraud,location,device_id,timestamp
+Swiggy Order,350.0,Food,0.0,False,Delhi,ANDROID_SAMSUNG_S21,2026-03-12 17:35:45.278705
+Uber Ride,220.0,Travel,0.025,False,Mumbai,ANDROID_PIXEL_7,2026-03-12 17:36:08.263440
+Amazon Electronics,65000.0,Shopping,0.245,False,Bangalore,IPHONE_14,2026-03-12 17:36:29.094579
+Online Gadget Store,82000.0,Shopping,0.53,False,Delhi,IPHONE_13,2026-03-12 17:36:47.571065
+Netflix Subscription,799.0,Subscriptions,0.02,False,Hyderabad,ANDROID_ONEPLUS_11,2026-03-12 17:37:05.140493

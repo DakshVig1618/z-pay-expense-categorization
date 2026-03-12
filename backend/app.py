@@ -21,6 +21,7 @@
 
 import os
 import pickle
+import datetime
 import pandas as pd
 
 from fastapi import FastAPI, HTTPException
@@ -96,9 +97,16 @@ device_encoder_path = os.path.join(
     BASE_DIR, "models", "trained", "device_encoder.pkl"
 )
 
+# ==================================================
+# 7. DEFINED PATH TO LOG FILE
+# ==================================================
+
+LOG_FILE = os.path.join(
+    BASE_DIR, "data", "logs", "transaction_logs.csv"
+)
 
 # ==================================================
-# 7. LOAD TRAINED MACHINE LEARNING MODELS
+# 8. LOAD TRAINED MACHINE LEARNING MODELS
 # ==================================================
 # Models are loaded using pickle so they can be used
 # for real-time predictions through the API.
@@ -112,9 +120,31 @@ with open(vectorizer_path, "rb") as f:
 with open(fraud_model_path, "rb") as f:
     fraud_model = pickle.load(f)
 
+# ==================================================
+# 9. SAVE TRANSACTIONS TO LOG FILE
+# ==================================================
+# Keeps the record of all the transactions
+
+def log_transaction(data, category, risk_score, is_fraud):
+
+    log_entry = pd.DataFrame([{
+        "description": data.description,
+        "amount": data.amount,
+        "category": category,
+        "risk_score": risk_score,
+        "is_fraud": is_fraud,
+        "location": data.location,
+        "device_id": data.device_id,
+        "timestamp": datetime.datetime.now()
+    }])
+
+    try:
+        log_entry.to_csv(LOG_FILE, mode="a", header=False, index=False)
+    except FileNotFoundError:
+        log_entry.to_csv(LOG_FILE, index=False)
 
 # ==================================================
-# 8. LOAD LABEL ENCODERS
+# 10. LOAD LABEL ENCODERS
 # ==================================================
 # Encoders convert categorical variables into numeric
 # values so that the fraud model can process them.
@@ -132,7 +162,7 @@ print("All models and encoders loaded successfully")
 
 
 # ==================================================
-# 9. DEFINE REQUEST SCHEMAS
+# 11. DEFINE REQUEST SCHEMAS
 # ==================================================
 # Pydantic models define the structure of incoming
 # JSON data sent to the API endpoints.
@@ -160,7 +190,7 @@ class TransactionInput(BaseModel):
 
 
 # ==================================================
-# 10. CATEGORY PREDICTION ENDPOINT
+# 12. CATEGORY PREDICTION ENDPOINT
 # ==================================================
 # This endpoint predicts the spending category of a
 # transaction using the NLP expense classification model.
@@ -191,7 +221,7 @@ def predict_category(data: CategoryInput):
 
 
 # ==================================================
-# 11. FRAUD DETECTION ENDPOINT
+# 13. FRAUD DETECTION ENDPOINT
 # ==================================================
 # This endpoint evaluates a transaction and returns
 # the probability that it is fraudulent.
@@ -235,7 +265,7 @@ def fraud_check(data: FraudInput):
 
 
 # ==================================================
-# 12. FULL TRANSACTION ANALYSIS ENDPOINT
+# 14. FULL TRANSACTION ANALYSIS ENDPOINT
 # ==================================================
 # This endpoint combines both models:
 #
@@ -268,8 +298,10 @@ def analyze_transaction(data: TransactionInput):
 
         # Predict fraud probability
         risk_score = fraud_model.predict_proba(df)[0][1]
-
         is_fraud = risk_score > 0.7
+
+        # Save transaction to logs
+        log_transaction(data, category_prediction, risk_score, is_fraud)
 
         return {
             "description": data.description,
